@@ -38,3 +38,5 @@ git ls-remote origin refs/heads/docs/chatbridge-plan refs/tags/v0.0.0-m0.1 'refs
 从仓库克隆后执行 `git switch --detach <版本标签>` 即可恢复该版全部已跟踪文件；需要修订时从标签创建新分支。构建与配置按该标签下的指南执行，敏感数据使用另行保存的备份。
 
 M0 版本标签为 `v0.0.0-m0.1`，包含 README、AGENTS、版本规则、架构设计、主规划、M0～M7 阶段计划、LICENSE 和 `.gitignore`。真实检查与交付证据记录在 [M0 执行记录](superpowers/plans/2026-10-24-chatbridge/M0-docs-and-github.md#执行记录)。
+
+M0 README 精简后的收尾版本为 `v0.0.0-m0.2`，保留相同的完整项目文件范围；规划导航维护在 docs 内，不再列入 README。首次标签保持不变。
