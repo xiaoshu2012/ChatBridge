@@ -11,6 +11,7 @@
 - [架构设计：目标、接口与行为边界](docs/superpowers/specs/2026-10-24-chatbridge-design.md)
 - [主规划：阶段进度、依赖与开发安排](docs/superpowers/plans/2026-10-24-chatbridge-implementation-plan.md)
 - [协作约定：后续所有正式计划都提交至 GitHub](AGENTS.md)
+- [版本备份：每版完整文件、Git 提交与版本标签](docs/versioning.md)
 
 ## 分阶段开发计划
 
