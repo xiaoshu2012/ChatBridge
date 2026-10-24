@@ -12,11 +12,11 @@
 
 ## 总体状态
 
-最后更新：2026-10-24。M0 文档正在交付；M1～M7 尚未实施。仓库当前不提供可运行产品。
+最后更新：2026-10-24。M0 文档已上传 GitHub，[PR #1](https://github.com/xiaoshu2012/ChatBridge/pull/1) 待合并；M1～M7 尚未实施。仓库当前不提供可运行产品。
 
 | 阶段与详细计划 | 状态 | 依赖 | 单人估算 | 可独立检查的产物 |
 | --- | --- | --- | --- | --- |
-| [M0 文档、导航与 GitHub](2026-10-24-chatbridge/M0-docs-and-github.md) | 进行中 | 无 | 0.5 天 | 设计、主规划、8 份阶段计划、GitHub PR |
+| [M0 文档、导航与 GitHub](2026-10-24-chatbridge/M0-docs-and-github.md) | 完成（PR 待合并） | 无 | 0.5 天 | 设计、主规划、8 份阶段计划、GitHub PR |
 | [M1 Windows/官方接口能力验证](2026-10-24-chatbridge/M1-capability-validation.md) | 未开始 | M0 | 1—2 天 | 可复现探针、兼容矩阵、版本记录 |
 | [M2 Python 核心与调度](2026-10-24-chatbridge/M2-python-core.md) | 未开始 | M1 | 2—3 天 | 统一类型、配置、SQLite、假适配器闭环 |
 | [M3 双 Agent 与恢复](2026-10-24-chatbridge/M3-agent-adapters.md) | 未开始 | M2 | 3—4 天 | 原生适配器、权限守卫、历史恢复、进程托管 |
@@ -79,4 +79,4 @@ Windows 首版总估算约 10—15 个工作日；以依赖和真实环境就绪
 | --- | --- | --- |
 | 2026-10-24 | 已确认官方 QQBot、双 Agent、SDK/服务接入、Windows 优先、私聊/群聊、历史恢复和工作区写入边界 | 见架构设计 |
 | 2026-10-24 | 已检查当前执行环境为 Linux/Python 3.12，不能据此认定 Windows 能力通过 | M1 尚未验收 |
-| 2026-10-24 | 正在创建 M0 文档及 GitHub 导航 | [M0 执行记录](2026-10-24-chatbridge/M0-docs-and-github.md#执行记录) |
+| 2026-10-24 | M0 文档及 GitHub 导航已交付，56 个相对链接检查通过 | [PR #1](https://github.com/xiaoshu2012/ChatBridge/pull/1) · [M0 执行记录](2026-10-24-chatbridge/M0-docs-and-github.md#执行记录) |
