@@ -32,12 +32,36 @@ def child_environment():
     }
 
 
+def resolve_codex():
+    if configured := os.environ.get("CHATBRIDGE_CODEX_BIN"):
+        path = Path(configured).expanduser()
+        return (
+            str(path)
+            if path.is_file() and path.suffix.lower() not in (".cmd", ".bat")
+            else None
+        )
+    found = shutil.which("codex")
+    if not found or Path(found).suffix.lower() not in (".cmd", ".bat"):
+        return found
+    # npm's Windows launcher is a shell wrapper. Use the package's native binary.
+    packages = Path(found).parent / "node_modules" / "@openai"
+    for directory in (
+        packages / "codex",
+        packages / "codex-win32-x64",
+        packages / "codex" / "node_modules" / "@openai" / "codex-win32-x64",
+    ):
+        binary = directory / "vendor" / "x86_64-pc-windows-msvc" / "codex" / "codex.exe"
+        if binary.is_file():
+            return str(binary)
+    return None
+
+
 def codex_checks():
     return [
         Check(
             "codex_executable",
-            "pass" if shutil.which("codex") else "blocked",
-            "" if shutil.which("codex") else "CODEX_NOT_FOUND",
+            "pass" if resolve_codex() else "blocked",
+            "" if resolve_codex() else "CODEX_NATIVE_BINARY_NOT_FOUND",
         )
     ]
 
@@ -48,7 +72,7 @@ async def codex_protocol(workspace):
         env = child_environment()
         env["CODEX_HOME"] = home
         async with RpcClient(
-            [shutil.which("codex"), "app-server", "--listen", "stdio://"],
+            [resolve_codex(), "app-server", "--listen", "stdio://"],
             env=env,
             cwd=workspace,
         ) as client:
@@ -157,7 +181,7 @@ def main():
                     str(args.workspace.resolve()),
                 ],
                 env=child_environment(),
-                timeout=90,
+                timeout=150,
             )
             report = json.loads(run.stdout)
             checks += [Check(**check) for check in report["checks"]]

@@ -40,3 +40,5 @@ git ls-remote origin refs/heads/docs/chatbridge-plan refs/tags/v0.0.0-m0.1 'refs
 M0 版本标签为 `v0.0.0-m0.1`，包含 README、AGENTS、版本规则、架构设计、主规划、M0～M7 阶段计划、LICENSE 和 `.gitignore`。真实检查与交付证据记录在 [M0 执行记录](superpowers/plans/2026-10-24-chatbridge/M0-docs-and-github.md#执行记录)。
 
 M0 README 精简后的收尾版本为 `v0.0.0-m0.2`，保留相同的完整项目文件范围；规划导航维护在 docs 内，不再列入 README。首次标签保持不变。
+
+M1 探针交付快照为 `v0.0.0-m1.1`，包含完整工具、测试、依赖快照、设计/计划和脱敏报告。标签只固定文件树；M1 真实验收仍阻塞，不能将标签当成阶段通过声明。

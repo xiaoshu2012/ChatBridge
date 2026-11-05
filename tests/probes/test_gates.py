@@ -138,3 +138,28 @@ def test_cli_preflight_does_not_leak_environment_or_claim_live_success(script):
     assert report["scope"] == "preflight"
     assert report["windows_acceptance"] is False
     assert any(c["status"] == "blocked" for c in report["checks"])
+
+
+def test_codex_npm_wrapper_resolves_native_executable_without_shell(
+    tmp_path, monkeypatch
+):
+    import tools.probes.agents as agents
+
+    wrapper = tmp_path / "codex.cmd"
+    wrapper.write_text("fixture wrapper")
+    executable = (
+        tmp_path
+        / "node_modules/@openai/codex/vendor/x86_64-pc-windows-msvc/codex/codex.exe"
+    )
+    executable.parent.mkdir(parents=True)
+    executable.write_text("fixture native binary")
+    monkeypatch.delenv("CHATBRIDGE_CODEX_BIN", raising=False)
+    monkeypatch.setattr(agents.shutil, "which", lambda _: str(wrapper))
+    assert agents.resolve_codex() == str(executable)
+
+
+def test_invalid_explicit_codex_binary_does_not_fall_back(tmp_path, monkeypatch):
+    from tools.probes.agents import resolve_codex
+
+    monkeypatch.setenv("CHATBRIDGE_CODEX_BIN", str(tmp_path / "missing.exe"))
+    assert resolve_codex() is None

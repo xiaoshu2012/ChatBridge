@@ -12,12 +12,12 @@
 
 ## 总体状态
 
-最后更新：2026-10-24。M0 文档已上传 GitHub，[PR #1](https://github.com/xiaoshu2012/ChatBridge/pull/1) 待合并；M1～M7 尚未实施。仓库当前不提供可运行产品。
+最后更新：2026-11-05。M0 已收尾并备份 `v0.0.0-m0.2`，[PR #1](https://github.com/xiaoshu2012/ChatBridge/pull/1) 待合并；M1 已交付协议探针、离线测试和 Windows 本机入口，真实验收及 DSH 权限守卫仍阻塞；M2～M7 未开始。仓库当前不提供可运行桥接产品。
 
 | 阶段与详细计划 | 状态 | 依赖 | 单人估算 | 可独立检查的产物 |
 | --- | --- | --- | --- | --- |
 | [M0 文档、导航与 GitHub](2026-10-24-chatbridge/M0-docs-and-github.md) | 完成（PR 待合并） | 无 | 0.5 天 | 设计、主规划、8 份阶段计划、GitHub PR |
-| [M1 Windows/官方接口能力验证](2026-10-24-chatbridge/M1-capability-validation.md) | 未开始 | M0 | 1—2 天 | 可复现探针、兼容矩阵、版本记录 |
+| [M1 Windows/官方接口能力验证](2026-10-24-chatbridge/M1-capability-validation.md) | 阻塞 | M0 | 前置条件就绪后 1—2 天 | 探针、离线测试、本机入口和矩阵已交付；真实验收未通过 |
 | [M2 Python 核心与调度](2026-10-24-chatbridge/M2-python-core.md) | 未开始 | M1 | 2—3 天 | 统一类型、配置、SQLite、假适配器闭环 |
 | [M3 双 Agent 与恢复](2026-10-24-chatbridge/M3-agent-adapters.md) | 未开始 | M2 | 3—4 天 | 原生适配器、权限守卫、历史恢复、进程托管 |
 | [M4 QQBot 完整交互](2026-10-24-chatbridge/M4-qqbot-integration.md) | 未开始 | M3 | 2—3 天 | 私聊/群聊任务、问答、结果与产物投递 |
@@ -75,7 +75,7 @@ Windows 首版总估算约 10—15 个工作日；以依赖和真实环境就绪
 
 ## 本轮交付范围与执行记录
 
-本轮先完成 M0：实际保存并上传全部计划、设计和导航。产品代码与 M1 真机验证由后续阶段交付。
+M0 已实际保存并上传全部计划、设计和文档内部导航。本轮继续交付 M1 验证工具与证据；真实 Windows/模型/QQ 和权限守卫验收未完成，不进入产品核心开发。
 
 | 日期 | 记录 | 证据 |
 | --- | --- | --- |
@@ -84,3 +84,5 @@ Windows 首版总估算约 10—15 个工作日；以依赖和真实环境就绪
 | 2026-10-24 | M0 文档及 GitHub 导航已交付，56 个相对链接检查通过 | [PR #1](https://github.com/xiaoshu2012/ChatBridge/pull/1) · [M0 执行记录](2026-10-24-chatbridge/M0-docs-and-github.md#执行记录) |
 | 2026-10-24 | 补充每版全部项目文件的 Git 备份约定；复核 13 份 Markdown、65 个相对链接及全部 15 个项目文件，独立审阅无问题 | [版本备份规则](../../versioning.md) · 交付标签 `v0.0.0-m0.1`，沿用 PR #1 |
 | 2026-10-24 | 按用户要求从 README 移除规划索引，M0 收尾保留 docs 内部双向导航 | 收尾版本 `v0.0.0-m0.2`，沿用 PR #1；后续规划无需写入 README |
+| 2026-11-05 | M1 探针恢复并分批推送；真实服务/SDK 无模型协议验证与人工 fixture 检查完成 | [Windows 验收记录](../../validation/windows-capabilities.md) · [兼容矩阵](../../validation/compatibility-matrix.md) |
+| 2026-11-05 | M1 阻塞项有证据：当前聊天未接通 Windows 本机终端，QQ 未配置，发布候选问答接口及历史权限守卫未满足 | 保持 M1 阻塞、M2～M7 未开始；探针快照 `v0.0.0-m1.1` 只表示完整版本备份 |

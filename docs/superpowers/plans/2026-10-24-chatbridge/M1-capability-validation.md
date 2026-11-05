@@ -2,7 +2,9 @@
 
 [返回主规划](../2026-10-24-chatbridge-implementation-plan.md) · [架构设计](../../specs/2026-10-24-chatbridge-design.md) · [上一阶段 M0](M0-docs-and-github.md) · [下一阶段 M2](M2-python-core.md)
 
-状态：未开始。依赖：M0。预计：1—2 个工作日。
+状态：阻塞（协议探针与离线检查已交付；真实 Windows/模型/QQ 验收及 DSH 权限守卫未通过）。依赖：M0，已收尾。预计：前置条件就绪后 1—2 个工作日。
+
+当前产物：[探针使用](../../../../tools/probes/README.md) · [Windows 验收记录](../../../validation/windows-capabilities.md) · [兼容矩阵](../../../validation/compatibility-matrix.md)。最后复核：2026-11-05。探针快照标签 `v0.0.0-m1.1` 不表示 M1 已验收。
 
 ## 目标与前置条件
 
@@ -20,10 +22,10 @@ M2/M3 消费明确锁定的版本和协议 fixture；SDK 版本不支持的能�
 
 ### M1.1：建立环境与 fixture 基线
 
-- [ ] 记录工具路径和版本，不输出完整环境变量或配置密钥。
+- [x] 记录当前执行器的工具路径和版本，不输出完整环境变量或配置密钥；Windows 工具版本仍待本机运行报告。
 - [ ] 验证 Windows 原生执行；建立中文及带空格路径的临时 Git 项目。
-- [ ] 给每个探针设置明确退出码：0 通过，1 失败，2 缺少前置条件；不能把 skip 当成功。
-- [ ] 为协议解析先写 fixture 测试，覆盖未知通知、不完整帧、stdout/stderr 分离和错误响应。
+- [x] 给每个探针设置明确退出码：0 当前 scope 通过，1 失败，2 缺少前置条件/仍须真实验收；不能把 skip 当成功。
+- [x] 为协议解析先写人工 fixture 测试，覆盖未知通知、不完整帧、stdout/stderr 分离和错误响应；不冒充真实 SDK/平台录制。
 
 ### M1.2：验证 QQBot
 
@@ -49,19 +51,20 @@ M2/M3 消费明确锁定的版本和协议 fixture；SDK 版本不支持的能�
 
 ### M1.5：冻结结论
 
-- [ ] 按 agent/新建/恢复/事件/问答/权限/取消逐项填矩阵；每项附命令和证据。
+- [x] 按 agent/新建/恢复/事件/问答/权限/取消逐项填矩阵；每项附命令和证据，未满足项明确标 blocked。
 - [ ] 锁定测试通过的发布版本和依赖范围，将样例录制为脱敏 fixture。
-- [ ] 检查 fixture 中的 token、openid、项目路径及用户内容已经脱敏。
+- [x] 检查人工 fixture 和已保存的报告不包含真实 token、openid、用户项目路径、消息正文或思维；真实平台录制尚未产生。
 
 ## 验证命令与验收
 
-以下文件与命令是本阶段要创建的工具，当前文档交付不意味着它们已存在：
+以下工具已创建。默认 Agent/QQ 命令只做前置检查，未满足真实验收会返回 2；协议探针需加 `--protocol-only`，真实 QQ smoke 需显式 `--live`，均不代表 M1 全部完成：
 
 ```powershell
 python -m pytest tests/probes -q
 python tools/probes/agents.py --agent codex --workspace "C:\Temp\ChatBridge 验证"
 python tools/probes/agents.py --agent dsh --workspace "C:\Temp\ChatBridge 验证"
 python tools/probes/qqbot.py
+pwsh -NoProfile -File tools/probes/run-windows.ps1 -PythonPath .\.venv\Scripts\python.exe
 ```
 
 验收必须包含真实 Windows 下两个 Agent 的新建、恢复、改文件、问答、拒绝越权和停止，以及 QQ 私聊/群聊回传。只通过 fixture 不足以完成 M1。
@@ -74,4 +77,12 @@ python tools/probes/qqbot.py
 
 ## 执行记录
 
-尚未运行。本轮仅确认文档编写环境为 Linux，不构成 Windows 验收。
+| 日期 | 动作 | 结果与后续 |
+| --- | --- | --- |
+| 2026-10-24 | M0 收尾后启动 M1；用户确认使用正在操作的 Windows 电脑 | 当前聊天只有云端 Linux shell，未附加本机终端；不等于用户缺少 Windows |
+| 2026-11-05 | 环境重建后从 Git 恢复 M0、恢复探针并及时推送 | `792a758`，30 项测试通过；后续 Windows 入口和 worker 回收提交 `2c5af1d`，36 项通过 |
+| 2026-11-05 | 新增 Windows 原生 Codex 定位、版本矩阵、依赖锁定快照与本机操作说明 | [探针使用](../../../../tools/probes/README.md)；README 保持项目介绍与实际交付状态，不列规划 |
+| 2026-11-05 | Linux 真 SDK/服务无模型检查 | Codex 初始化/新建空 thread/拒绝不存在会话通过；DSH 标准 sdk 空会话跨 runtime 同 ID 恢复通过；保留首次超时证据 |
+| 2026-11-05 | 验证发布候选与 master 接口差异 | `0.2.1rc2` 有 resume，但高层配置无 `on_user_question`；未验证历史权限守卫，不冻结产品基线 |
+
+决定：沿用用户确认的架构，不以 Linux 结果替代 Windows；M1 保持阻塞，未验收任务不勾选。恢复条件及剩余逐项验收见 [Windows 验收记录](../../../validation/windows-capabilities.md)。

@@ -34,7 +34,7 @@ def smoke(workspace):
                     dsh_home=home,
                     cwd=str(workspace),
                     profile="sdk",
-                    initialize_timeout_seconds=10,
+                    initialize_timeout_seconds=30,
                     request_timeout_seconds=10,
                 )
             )

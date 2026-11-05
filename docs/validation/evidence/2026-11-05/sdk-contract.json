@@ -1,0 +1,45 @@
+{
+  "checked_on": "2026-11-05",
+  "sdk": "0.2.1rc2",
+  "DeepSeekHarness_parameters": [
+    "config",
+    "_launch_args",
+    "kwargs"
+  ],
+  "DeepSeekHarnessConfig_parameters": [
+    "provider",
+    "model",
+    "reasoning_effort",
+    "max_tokens",
+    "cwd",
+    "runtime_cwd",
+    "dsh_bin",
+    "profile",
+    "patches",
+    "dsh_home",
+    "env",
+    "initialize_timeout_seconds",
+    "request_timeout_seconds",
+    "shutdown_timeout_seconds",
+    "base_url",
+    "api_key"
+  ],
+  "HarnessClient_initialize_parameters": [
+    "self",
+    "cwd",
+    "provider",
+    "model",
+    "reasoning_effort",
+    "max_tokens"
+  ],
+  "resume_session_available": true,
+  "native_question_callback_in_release": false,
+  "source_comparison_commit": "fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159",
+  "linux_python": "3.12.14",
+  "codex_version": "codex-cli 0.163.0",
+  "tools": {
+    "codex": "/opt/codex/bin/codex",
+    "pwsh": null,
+    "git": "/usr/local/bin/git"
+  }
+}

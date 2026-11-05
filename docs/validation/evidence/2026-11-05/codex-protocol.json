@@ -1,0 +1,35 @@
+{
+  "recorded_at": "2026-11-05T13:41:12.743046+00:00",
+  "scope": "protocol-only",
+  "os": "Linux",
+  "architecture": "x86_64",
+  "python": "3.12.14",
+  "windows_acceptance": false,
+  "versions": {
+    "deepseek-harness-sdk": "0.2.1rc2",
+    "deepseek-harness-runtime-bin": "0.2.1rc2"
+  },
+  "checks": [
+    {
+      "name": "codex_executable",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "codex_initialize",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "codex_thread_start_no_model",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "codex_missing_session_rejected",
+      "status": "pass",
+      "code": ""
+    }
+  ],
+  "observed_exit_code": 0
+}
