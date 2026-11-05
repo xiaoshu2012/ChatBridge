@@ -1,0 +1,5 @@
+# Probe tooling only. These are NOT the M2/M3 production compatibility baseline.
+pytest==9.1.1
+ruff==0.17.2
+httpx==0.28.1
+websockets==16.0
