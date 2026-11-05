@@ -30,3 +30,13 @@ def test_sdk_worker_cannot_claim_success_without_dependency():
     assert result.returncode == 2
     assert "SDK_NOT_INSTALLED" in result.stdout
     assert not result.stderr
+
+
+def test_sdk_worker_strips_qq_environment_before_sdk_start(monkeypatch):
+    from tools.probes.dsh_smoke import clean_environment
+
+    monkeypatch.setenv("CHATBRIDGE_QQ_APP_SECRET", "fixture-secret")
+    monkeypatch.setenv("QQ_APP_SECRET", "fixture-secret")
+    clean_environment()
+    assert "CHATBRIDGE_QQ_APP_SECRET" not in os.environ
+    assert "QQ_APP_SECRET" not in os.environ

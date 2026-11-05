@@ -1,6 +1,7 @@
 """Isolated released SDK: no prompt, model request or permission change."""
 
 import argparse
+import os
 import sys
 import tempfile
 from pathlib import Path
@@ -11,7 +12,15 @@ if __package__ in (None, ""):
 from tools.probes.common import Check, emit, installed_version
 
 
+def clean_environment():
+    # This worker is a separate process. Scrub before SDK's inherited-env merge.
+    for key in list(os.environ):
+        if key.startswith(("CHATBRIDGE_QQ_", "QQ_")):
+            del os.environ[key]
+
+
 def smoke(workspace):
+    clean_environment()
     try:
         from deepseek_harness import HarnessClient, HarnessConfig
         from deepseek_harness.errors import JsonRpcError

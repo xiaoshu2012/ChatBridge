@@ -20,6 +20,7 @@ from tools.probes.common import (
     installed_version,
     sdk_contract,
 )
+from tools.probes.process import run_isolated
 from tools.probes.rpc import RpcClient, RpcError
 
 
@@ -148,7 +149,7 @@ def main():
         and args.workspace.is_dir()
     ):
         try:
-            run = subprocess.run(
+            run = run_isolated(
                 [
                     sys.executable,
                     str(Path(__file__).with_name("dsh_smoke.py")),
@@ -156,10 +157,7 @@ def main():
                     str(args.workspace.resolve()),
                 ],
                 env=child_environment(),
-                capture_output=True,
-                text=True,
-                timeout=45,
-                check=False,
+                timeout=90,
             )
             report = json.loads(run.stdout)
             checks += [Check(**check) for check in report["checks"]]
