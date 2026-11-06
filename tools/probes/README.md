@@ -52,7 +52,7 @@ $env:CHATBRIDGE_CODEX_BIN = "C:\实际安装目录\codex.exe"
 pwsh -NoProfile -File tools/probes/run-windows.ps1 -PythonPath .\.venv\Scripts\python.exe -QQLive
 ```
 
-或者单独运行 `python tools/probes/qqbot.py --live --seconds 120`。探针先获取 token 和网关，验证 READY 后主动断开一次，用相同 session/seq 发 RESUME，并等待 RESUMED 和心跳 ACK。在测试窗口内本人分别单聊机器人、在允许群 @机器人；每种会话最多发送一次固定回复 `ChatBridge M1 probe OK`。重复消息、非本人、非允许群和没有 @事件的群消息不会触发回复。发送结果 uncertain 时不重试，不执行 Agent。
+或者单独运行 `python tools/probes/qqbot.py --live --seconds 120`。探针先获取 token 和网关，验证 READY 后主动断开一次，用相同 session/seq 发 RESUME，并等待 RESUMED 和当前连接的心跳 ACK。恢复期间早于 RESUMED 到达的合法补发消息会暂存，每个允许会话最多一条；确认恢复后回复，恢复失败或超时不发送。在测试窗口内本人分别单聊机器人、在允许群 @机器人；每种会话最多发送一次固定回复 `ChatBridge M1 probe OK`。重复消息、非本人、非允许群和没有 @事件的群消息不会触发回复。发送结果 uncertain 时不重试，不执行 Agent。
 
 此 smoke 不验证 token 长时间更新、平台回复窗口/次数、主动消息或媒体权限，也不自动恢复 RESUME 失败后的业务连接；这些仍须真实应用测试。缺少配置不会发网络请求。需要官方 QQ API 和网关访问权限，不能用模拟 HTTP 作为平台通过证据。
 

@@ -87,3 +87,4 @@ M0 已实际保存并上传全部计划、设计和文档内部导航。本轮�
 | 2026-11-05 | M1 探针恢复并分批推送；真实服务/SDK 无模型协议验证与人工 fixture 检查完成 | [Windows 验收记录](../../validation/windows-capabilities.md) · [兼容矩阵](../../validation/compatibility-matrix.md) |
 | 2026-11-05 | M1 阻塞项有证据：当前聊天未接通 Windows 本机终端，QQ 未配置，发布候选问答接口及历史权限守卫未满足 | 保持 M1 阻塞、M2～M7 未开始；探针快照 `v0.0.0-m1.1` 只表示完整版本备份 |
 | 2026-11-06 | 完成独立审阅修复与 44 项回归，QQ 重连 ACK 按连接隔离，Codex 报告补齐实际版本 | [草稿 PR #2](https://github.com/xiaoshu2012/ChatBridge/pull/2)；M1 仍须 Windows/模型/QQ 及权限守卫真实验收 |
+| 2026-11-06 | 修复 QQ 在 RESUMED 之前丢弃补发消息，复核当前连接 ACK；51 项测试通过 | [草稿 PR #2](https://github.com/xiaoshu2012/ChatBridge/pull/2) 更新；完整修订快照 `v0.0.0-m1.2`，M1 真实验收状态不变 |

@@ -183,6 +183,7 @@ async def live_roundtrip(env, seconds):
                 hello = json.loads(await asyncio.wait_for(ws.recv(), 15))
                 await ws.send(json.dumps(state.hello(hello, resume=resume)))
                 next_heartbeat, connected = time.monotonic(), False
+                pending_targets = {}
                 while time.monotonic() < deadline:
                     now = time.monotonic()
                     if now >= next_heartbeat:
@@ -208,20 +209,24 @@ async def live_roundtrip(env, seconds):
                         )
                         if not resume:
                             break
-                    target = (
-                        authorized_target(frame, env) if connected and resume else None
-                    )
+                    target = authorized_target(frame, env) if resume else None
                     if target and target not in seen and target[0] not in answered:
-                        seen.add(target)
-                        status = await api.reply(target)
-                        checks.append(
-                            Check(
-                                "qq_" + target[0] + "_roundtrip",
-                                "pass" if status == "sent" else "blocked",
-                                status,
+                        # Replayed dispatches precede RESUMED. Keep at most one
+                        # authorized message per context; reply only after confirmation.
+                        pending_targets.setdefault(target[0], target)
+                    if connected and resume:
+                        for target in pending_targets.values():
+                            seen.add(target)
+                            status = await api.reply(target)
+                            checks.append(
+                                Check(
+                                    "qq_" + target[0] + "_roundtrip",
+                                    "pass" if status == "sent" else "blocked",
+                                    status,
+                                )
                             )
-                        )
-                        answered.add(target[0])
+                            answered.add(target[0])
+                        pending_targets.clear()
                     if resume and answered == {"users", "groups"} and state.ack_seen:
                         break
                 if not connected:

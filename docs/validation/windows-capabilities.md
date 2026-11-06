@@ -55,5 +55,6 @@ pwsh -NoProfile -File tools/probes/run-windows.ps1 -PythonPath .\.venv\Scripts\p
 | 2026-11-05 | 发布版复核和 Linux 无模型协议检查 | [兼容矩阵](compatibility-matrix.md)及本目录 evidence；DSH 首次超时与复核结果均保留 |
 | 2026-11-06 | 独立审阅后的修复与最终检查 | 修复 QQ 重连沿用旧 ACK 的误判，只接受当前连接待确认心跳的 ACK；Codex 报告直接记录真实二进制版本；新回归测试先失败再通过，完整 44 项通过；[最终检查记录](evidence/2026-11-06/final-checks.txt) |
 | 2026-11-06 | 复核真实 Codex 版本及协议 | [0.163.0 协议报告](evidence/2026-11-06/codex-protocol.json)，仅为 Linux 无模型检查；当前聊天仍未附加 Windows 本机终端 |
+| 2026-11-06 | 修复恢复期间丢弃补发消息，验证旧连接 ACK 不算通过 | 新增私聊/群聊补发、确认前不发送、恢复失败/超时、重复消息和缺失当前连接 ACK 的完整循环回归，先复现失败再修复；[修订检查记录](evidence/2026-11-06/qq-recovery-regression.txt)；完整 51 项测试通过 |
 
-所有版本保留完整项目文件树；M1 探针快照标签使用 `v0.0.0-m1.1`，不表示阶段已验收。[草稿 PR #2](https://github.com/xiaoshu2012/ChatBridge/pull/2) 位于 `feat/m1-capability-validation`，依赖 M0 的 PR #1，未经授权不合并。最终提交通过版本标签定位，交接时核验远端分支及标签解引用 SHA。M2/M3 的产品基线不在此时冻结。
+所有版本保留完整项目文件树；最新 M1 探针修订快照为 `v0.0.0-m1.2`，首次快照 `v0.0.0-m1.1` 保留，均不表示阶段已验收。[草稿 PR #2](https://github.com/xiaoshu2012/ChatBridge/pull/2) 位于 `feat/m1-capability-validation`，依赖 M0 的 PR #1，未经授权不合并。最终提交通过版本标签定位，交接时核验远端分支及标签解引用 SHA。M2/M3 的产品基线不在此时冻结。
