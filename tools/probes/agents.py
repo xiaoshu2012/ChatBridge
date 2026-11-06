@@ -4,6 +4,7 @@ import argparse
 import asyncio
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -64,6 +65,17 @@ def codex_checks():
             "" if resolve_codex() else "CODEX_NATIVE_BINARY_NOT_FOUND",
         )
     ]
+
+
+def codex_version(binary):
+    try:
+        run = run_isolated([binary, "--version"], env=child_environment(), timeout=10)
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    match = re.fullmatch(
+        r"codex-cli ([0-9]+\.[0-9]+\.[0-9]+(?:[-+][\w.-]+)?)", run.stdout.strip()
+    )
+    return match.group(1) if run.returncode == 0 and match else None
 
 
 async def codex_protocol(workspace):
@@ -149,9 +161,20 @@ def main():
     versions = {
         key: value
         for key in ("deepseek-harness-sdk", "deepseek-harness-runtime-bin")
-        if (value := installed_version(key))
+        if args.agent == "dsh" and (value := installed_version(key))
     }
     checks = codex_checks() if args.agent == "codex" else dsh_contract_checks()
+    if args.agent == "codex" and (binary := resolve_codex()):
+        version = codex_version(binary)
+        checks.append(
+            Check(
+                "codex_version",
+                "pass" if version else "fail",
+                "" if version else "CODEX_VERSION_UNRECOGNIZED",
+            )
+        )
+        if version:
+            versions["codex"] = version
     if not args.workspace.is_dir():
         checks.append(Check("workspace", "blocked", "WORKSPACE_NOT_FOUND"))
     if not args.protocol_only:

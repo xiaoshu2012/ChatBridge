@@ -2,7 +2,7 @@
 
 [M1 阶段计划](../superpowers/plans/2026-10-24-chatbridge/M1-capability-validation.md) · [兼容矩阵](compatibility-matrix.md) · [探针使用](../../tools/probes/README.md)
 
-日期：2026-11-05。状态：阻塞。M0 已收尾并备份为 `v0.0.0-m0.2`；M1 已交付协议探针、离线测试、Windows 本机入口和脱敏证据，尚未完成真实 Windows/模型/QQ 验收。
+最后更新：2026-11-06。状态：阻塞。M0 已收尾并备份为 `v0.0.0-m0.2`；M1 已交付协议探针、离线测试、Windows 本机入口和脱敏证据，尚未完成真实 Windows/模型/QQ 验收。
 
 ## 当前已完成与执行边界
 
@@ -26,7 +26,7 @@ pwsh -NoProfile -File tools/probes/run-windows.ps1 -PythonPath .\.venv\Scripts\p
 
 | ID | 场景 | 通过条件 | 当前状态 |
 | --- | --- | --- | --- |
-| WIN-01 | Windows 11 x64、Python 3.12、PowerShell 7 | 本机报告含版本，中文和带空格的临时 Git 目录可用 | blocked：尚无本机执行入口 |
+| WIN-01 | Windows 11 x64、Python 3.12、PowerShell 7 | 本机报告含版本，中文和带空格的临时 Git 目录可用 | blocked：当前聊天未附加本机终端；本机执行脚本已提供 |
 | QQ-01 | 本人单聊和允许群 @机器人 | 两个上下文分别收到固定回复，原生身份字段分别确认 | blocked：凭据只在本机配置，当前未运行 live |
 | QQ-02 | token 更新、心跳与 RESUME | 真实 ACK/RESUMED 和更新证据；错误路径可辨认 | blocked：fixture 通过不足以完成 |
 | QQ-03 | 回复次数/窗口、去重、主动消息、上传 | 与现行文档及实际应用权限逐项核对、记录 | blocked：未测，不冻结设计默认限额 |
@@ -53,5 +53,7 @@ pwsh -NoProfile -File tools/probes/run-windows.ps1 -PythonPath .\.venv\Scripts\p
 | 2026-11-05 | 从 Git 恢复 M0，并恢复/验证探针 | `792a758` 已推送，30 项测试通过 |
 | 2026-11-05 | Windows 入口、退出码与 worker 回收 | `2c5af1d` 已推送，36 项测试通过；Windows 行为仍须本机实测 |
 | 2026-11-05 | 发布版复核和 Linux 无模型协议检查 | [兼容矩阵](compatibility-matrix.md)及本目录 evidence；DSH 首次超时与复核结果均保留 |
+| 2026-11-06 | 独立审阅后的修复与最终检查 | 修复 QQ 重连沿用旧 ACK 的误判，只接受当前连接待确认心跳的 ACK；Codex 报告直接记录真实二进制版本；新回归测试先失败再通过，完整 44 项通过；[最终检查记录](evidence/2026-11-06/final-checks.txt) |
+| 2026-11-06 | 复核真实 Codex 版本及协议 | [0.163.0 协议报告](evidence/2026-11-06/codex-protocol.json)，仅为 Linux 无模型检查；当前聊天仍未附加 Windows 本机终端 |
 
-所有版本保留完整项目文件树；M1 探针快照标签使用 `v0.0.0-m1.1`，不表示阶段已验收。最终提交和 PR 入口随 GitHub 交接提供。M2/M3 的产品基线不在此时冻结。
+所有版本保留完整项目文件树；M1 探针快照标签使用 `v0.0.0-m1.1`，不表示阶段已验收。[草稿 PR #2](https://github.com/xiaoshu2012/ChatBridge/pull/2) 位于 `feat/m1-capability-validation`，依赖 M0 的 PR #1，未经授权不合并。最终提交通过版本标签定位，交接时核验远端分支及标签解引用 SHA。M2/M3 的产品基线不在此时冻结。

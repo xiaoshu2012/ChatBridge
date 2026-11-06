@@ -163,3 +163,24 @@ def test_invalid_explicit_codex_binary_does_not_fall_back(tmp_path, monkeypatch)
 
     monkeypatch.setenv("CHATBRIDGE_CODEX_BIN", str(tmp_path / "missing.exe"))
     assert resolve_codex() is None
+
+
+@pytest.mark.parametrize(
+    ("stdout", "returncode", "want"),
+    [
+        ("codex-cli 0.163.0\n", 0, "0.163.0"),
+        ("Python 3.12.14\n", 0, None),
+        ("codex-cli 0.163.0\n", 1, None),
+    ],
+)
+def test_codex_audit_records_version_only_for_valid_native_cli(
+    monkeypatch, stdout, returncode, want
+):
+    import tools.probes.agents as agents
+
+    monkeypatch.setattr(
+        agents,
+        "run_isolated",
+        lambda *args, **kwargs: subprocess.CompletedProcess([], returncode, stdout, ""),
+    )
+    assert agents.codex_version("fixture-native-codex") == want

@@ -4,7 +4,7 @@
 
 状态：阻塞（协议探针与离线检查已交付；真实 Windows/模型/QQ 验收及 DSH 权限守卫未通过）。依赖：M0，已收尾。预计：前置条件就绪后 1—2 个工作日。
 
-当前产物：[探针使用](../../../../tools/probes/README.md) · [Windows 验收记录](../../../validation/windows-capabilities.md) · [兼容矩阵](../../../validation/compatibility-matrix.md)。最后复核：2026-11-05。探针快照标签 `v0.0.0-m1.1` 不表示 M1 已验收。
+当前产物：[探针使用](../../../../tools/probes/README.md) · [Windows 验收记录](../../../validation/windows-capabilities.md) · [兼容矩阵](../../../validation/compatibility-matrix.md)。最后更新：2026-11-06。探针快照标签 `v0.0.0-m1.1` 不表示 M1 已验收。
 
 ## 目标与前置条件
 
@@ -84,5 +84,7 @@ pwsh -NoProfile -File tools/probes/run-windows.ps1 -PythonPath .\.venv\Scripts\p
 | 2026-11-05 | 新增 Windows 原生 Codex 定位、版本矩阵、依赖锁定快照与本机操作说明 | [探针使用](../../../../tools/probes/README.md)；README 保持项目介绍与实际交付状态，不列规划 |
 | 2026-11-05 | Linux 真 SDK/服务无模型检查 | Codex 初始化/新建空 thread/拒绝不存在会话通过；DSH 标准 sdk 空会话跨 runtime 同 ID 恢复通过；保留首次超时证据 |
 | 2026-11-05 | 验证发布候选与 master 接口差异 | `0.2.1rc2` 有 resume，但高层配置无 `on_user_question`；未验证历史权限守卫，不冻结产品基线 |
+| 2026-11-05 | 创建独立验证工具草稿 PR | [PR #2](https://github.com/xiaoshu2012/ChatBridge/pull/2)，分支 `feat/m1-capability-validation`，目标 `docs/chatbridge-plan`，依赖 PR #1；M1 继续保持阻塞 |
+| 2026-11-06 | 完成独立审阅后的修复和回归 | QQ 心跳确认按连接隔离并拒绝无待确认心跳的 ACK；Codex 版本写入探针报告；新增回归先失败再通过，完整 44 项测试与 Ruff 检查通过；真实验收仍阻塞 |
 
 决定：沿用用户确认的架构，不以 Linux 结果替代 Windows；M1 保持阻塞，未验收任务不勾选。恢复条件及剩余逐项验收见 [Windows 验收记录](../../../validation/windows-capabilities.md)。

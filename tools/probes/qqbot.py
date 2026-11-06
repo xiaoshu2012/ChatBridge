@@ -70,6 +70,7 @@ class GatewayState:
         ):
             raise ProtocolError("INVALID_HELLO")
         self.interval, self.awaiting_ack = interval / 1000, False
+        self.ack_seen = False
         if resume:
             if not self.session_id or self.sequence is None:
                 raise ProtocolError("NO_RESUME_CONTEXT")
@@ -89,7 +90,7 @@ class GatewayState:
     def receive(self, frame):
         if frame.get("op") == 9:
             raise ProtocolError("INVALID_SESSION")
-        if frame.get("op") == 11:
+        if frame.get("op") == 11 and self.awaiting_ack:
             self.awaiting_ack, self.ack_seen = False, True
         if frame.get("op") == 0:
             sequence = frame.get("s")

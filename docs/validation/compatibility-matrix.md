@@ -2,7 +2,7 @@
 
 [Windows 验收记录](windows-capabilities.md) · [M1 阶段](../superpowers/plans/2026-10-24-chatbridge/M1-capability-validation.md) · [探针使用](../../tools/probes/README.md)
 
-最后复核：2026-11-05。M1 状态：阻塞。以下 Linux 实测不代替 Windows 11 x64；尚未冻结 M2/M3 的产品依赖基线。
+最后更新：2026-11-06（SDK/PyPI 候选复核于 11-05，Codex 与离线回归复核于 11-06）。M1 状态：阻塞。以下 Linux 实测不代替 Windows 11 x64；尚未冻结 M2/M3 的产品依赖基线。
 
 ## 版本与官方来源
 
@@ -34,6 +34,7 @@
 ## 可复现结果
 
 - [Codex 无模型协议报告](evidence/2026-11-05/codex-protocol.json)：退出码 0，仅对应 protocol-only scope。
+- [最新 Codex 协议报告](evidence/2026-11-06/codex-protocol.json)：报告直接记录实际二进制版本 `0.163.0`；不是 Windows 通过证据。
 - [DSH 首次初始化超时记录](evidence/2026-11-05/dsh-protocol-initial-timeout.json)：退出码 1，保留失败证据。
 - [DSH 复核报告](evidence/2026-11-05/dsh-protocol.json)：恢复官方默认 30 秒初始化上限后，无模型初始化、空会话新建、同 ID 恢复及不存在会话拒绝通过；因为问答与权限守卫尚未满足，整体退出码 2。
 - [Windows 前置检查](evidence/2026-11-05/windows-entry.json)、[QQ 前置检查](evidence/2026-11-05/qq-preflight.json)：退出码 2。

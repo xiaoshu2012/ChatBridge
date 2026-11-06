@@ -1,0 +1,11 @@
+2026-11-06 final probe-snapshot verification
+
+python -m pytest -q: 44 passed (Linux, offline tests; not Windows acceptance).
+python -m ruff check tools tests: All checks passed.
+python -m ruff format --check tools tests: 14 files already formatted.
+PASS: 16 Markdown documents; 85 relative file/anchor links; stage navigation/states; README excludes planning.
+
+Independent review: QQ stale-connection ACK fixed; unsolicited ACK cannot satisfy a heartbeat. Full-loop regressions observed RED then GREEN.
+Codex version evidence treated as required by the M1 version-record contract: exact selected binary version recorded; invalid identity/nonzero CLI exit rejected, RED then GREEN.
+WIN-01 wording clarified: local script exists; this chat has no attached Windows terminal.
+Actual Windows/model/QQ/permission-guard acceptance remains blocked, not inferred from these checks.

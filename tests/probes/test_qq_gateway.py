@@ -103,3 +103,98 @@ def test_qq_uncertain_send_is_not_retried():
 
     asyncio.run(run())
     assert calls == 1
+
+
+def test_unsolicited_ack_does_not_count_as_a_heartbeat_response():
+    state = GatewayState("fixture-token")
+    state.hello({"op": 10, "d": {"heartbeat_interval": 45000}})
+    state.receive({"op": 11})
+    assert state.ack_seen is False
+
+
+@pytest.mark.parametrize(("second_ack", "want_exit"), [(False, 2), (True, 0)])
+def test_full_roundtrip_requires_ack_from_resumed_connection(
+    monkeypatch, second_ack, want_exit
+):
+    from types import SimpleNamespace
+
+    import tools.probes.qqbot as qq
+    from tools.probes.common import exit_code
+
+    clock = SimpleNamespace(now=0)
+    monkeypatch.setattr(qq, "time", SimpleNamespace(monotonic=lambda: clock.now))
+    hello = {"op": 10, "d": {"heartbeat_interval": 45000}}
+    first = [
+        hello,
+        {"op": 11},
+        {"op": 0, "s": 1, "t": "READY", "d": {"session_id": "fixture-session"}},
+    ]
+    second = [
+        hello,
+        {"op": 0, "s": 2, "t": "RESUMED", "d": ""},
+        {
+            "op": 0,
+            "s": 3,
+            "t": "C2C_MESSAGE_CREATE",
+            "d": {"id": "fixture-c2c", "author": {"user_openid": "private-owner"}},
+        },
+        {
+            "op": 0,
+            "s": 4,
+            "t": "GROUP_AT_MESSAGE_CREATE",
+            "d": {
+                "id": "fixture-group",
+                "group_openid": "allowed-group",
+                "author": {"member_openid": "group-owner"},
+            },
+        },
+    ]
+    if second_ack:
+        second.append({"op": 11})
+    sockets = [first, second]
+
+    class Socket:
+        def __init__(self, frames):
+            self.frames = list(frames)
+
+        async def __aenter__(self):
+            return self
+
+        async def __aexit__(self, *_):
+            pass
+
+        async def send(self, frame):
+            pass
+
+        async def recv(self):
+            if self.frames:
+                return json.dumps(self.frames.pop(0))
+            clock.now = 1000
+            raise TimeoutError
+
+    class Api:
+        token = "fixture-token"
+
+        def __init__(self, *_):
+            pass
+
+        async def refresh_token(self):
+            pass
+
+        async def gateway(self):
+            return "wss://api.bot.qq.com/websocket/"
+
+        async def reply(self, target):
+            return "sent"
+
+    monkeypatch.setattr(qq, "connect", lambda *args, **kwargs: Socket(sockets.pop(0)))
+    monkeypatch.setattr(qq, "QQApi", Api)
+    env = {
+        "CHATBRIDGE_QQ_C2C_OPENID": "private-owner",
+        "CHATBRIDGE_QQ_GROUP_OPENID": "allowed-group",
+        "CHATBRIDGE_QQ_GROUP_MEMBER_OPENID": "group-owner",
+    }
+    result = asyncio.run(qq.live_roundtrip(env, 15))
+    assert exit_code(result) == want_exit
+    ack = next(check for check in result if check.name == "qq_heartbeat_ack")
+    assert ack.status == ("pass" if second_ack else "blocked")
