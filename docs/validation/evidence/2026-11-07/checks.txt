@@ -1,0 +1,10 @@
+2026-11-07 DSH native audit snapshot
+
+.venv/bin/python -m pytest -q: 64 passed, including real installed SDK environment-merge boundary test.
+.venv/bin/python -m ruff check tools tests: All checks passed.
+.venv/bin/python -m ruff format --check tools tests: 17 files already formatted.
+node --check tools/probes/dsh_native_bundle/index.mjs: exit 0.
+PASS: 19 Markdown documents; 119 relative links/anchors; M1 blocked and M2-M7 pending; README scope unchanged.
+
+Native SDK/runtime: 0.2.1rc2, standard sdk profile, isolated temporary home and empty sessions, no model prompt or tool execution. Final CLI exit 2: four lifecycle checks pass; native question NO_PROVIDER, first-model boundary and Windows write enforcement remain blocked.
+Review fixes: SDK inherited-environment remerge is prevented by a sanitized dedicated worker and worker-side cleanup; completed mismatched answers fail instead of reporting missing prerequisites. Regression cases observed RED then GREEN.

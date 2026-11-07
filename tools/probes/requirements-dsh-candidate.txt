@@ -1,0 +1,4 @@
+# Explicit published release candidate under validation; not an accepted baseline.
+-r requirements.txt
+deepseek-harness-sdk==0.2.1rc2
+deepseek-harness-runtime-bin==0.2.1rc2

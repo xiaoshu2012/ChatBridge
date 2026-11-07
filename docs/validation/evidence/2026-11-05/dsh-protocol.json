@@ -1,0 +1,55 @@
+{
+  "recorded_at": "2026-11-05T13:43:57.937742+00:00",
+  "scope": "protocol-only",
+  "os": "Linux",
+  "architecture": "x86_64",
+  "python": "3.12.14",
+  "windows_acceptance": false,
+  "versions": {
+    "deepseek-harness-sdk": "0.2.1rc2",
+    "deepseek-harness-runtime-bin": "0.2.1rc2"
+  },
+  "checks": [
+    {
+      "name": "dsh_released_sdk_contract",
+      "status": "blocked",
+      "code": "MISSING_on_user_question"
+    },
+    {
+      "name": "dsh_permission_guard",
+      "status": "blocked",
+      "code": "RELEASE_GUARD_NOT_VERIFIED"
+    },
+    {
+      "name": "dsh_initialize_new",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "dsh_cwd_new",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "dsh_initialize_resumed",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "dsh_empty_session_resume",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "dsh_missing_session_rejected",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "dsh_cwd_resumed",
+      "status": "pass",
+      "code": ""
+    }
+  ],
+  "observed_exit_code": 2
+}

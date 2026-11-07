@@ -1,0 +1,13 @@
+2026-11-06 QQ recovery fixes (artificial protocol fixtures and controlled HTTP boundary)
+
+Reviewed revision: 3740147, following user review of c0ef1a6.
+P1 reproduced: authorized replay before RESUMED was discarded. Four new test cases failed before the fix (including replay plus missing current ACK).
+P1 fix: bounded pending targets per authorized context; replies only after RESUMED, deduplicated across the confirmation boundary. Unconfirmed/rejected resume sends nothing.
+P2: already fixed in 3740147. ACK state resets per connection; unsolicited ACK cannot satisfy a heartbeat. Existing and new full-loop regressions revalidated.
+
+python -m pytest tests/probes/test_qq_replay.py tests/probes/test_qq_gateway.py -q: 14 passed.
+python -m pytest -q: 51 passed.
+python -m ruff check tools tests: All checks passed.
+python -m ruff format --check tools tests: 15 files already formatted.
+
+No live QQ or model calls were made. M1 native acceptance remains blocked.

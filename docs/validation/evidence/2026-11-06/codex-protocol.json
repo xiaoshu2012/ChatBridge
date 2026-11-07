@@ -1,0 +1,39 @@
+{
+  "recorded_at": "2026-11-06T13:40:08.659261+00:00",
+  "scope": "protocol-only",
+  "os": "Linux",
+  "architecture": "x86_64",
+  "python": "3.12.14",
+  "windows_acceptance": false,
+  "versions": {
+    "codex": "0.163.0"
+  },
+  "checks": [
+    {
+      "name": "codex_executable",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "codex_version",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "codex_initialize",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "codex_thread_start_no_model",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "codex_missing_session_rejected",
+      "status": "pass",
+      "code": ""
+    }
+  ],
+  "observed_exit_code": 0
+}

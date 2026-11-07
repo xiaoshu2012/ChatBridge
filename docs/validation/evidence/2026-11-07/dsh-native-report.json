@@ -1,0 +1,49 @@
+{
+  "recorded_at": "2026-11-07T05:06:41.931482+00:00",
+  "scope": "dsh-native-lifecycle",
+  "os": "Linux",
+  "architecture": "x86_64",
+  "python": "3.12.14",
+  "windows_acceptance": false,
+  "versions": {
+    "deepseek-harness-sdk": "0.2.1rc2",
+    "deepseek-harness-runtime-bin": "0.2.1rc2"
+  },
+  "checks": [
+    {
+      "name": "native_bundle_loaded",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "historical_override_observed",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "native_policy_downgrade",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "guard_rejects_restore",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "native_question_roundtrip",
+      "status": "blocked",
+      "code": "NO_PROVIDER"
+    },
+    {
+      "name": "first_model_request",
+      "status": "blocked",
+      "code": "MODEL_BOUNDARY_NOT_EXERCISED"
+    },
+    {
+      "name": "windows_permission_enforcement",
+      "status": "blocked",
+      "code": "NATIVE_WRITE_BOUNDARY_NOT_EXERCISED"
+    }
+  ]
+}

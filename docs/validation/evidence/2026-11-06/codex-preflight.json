@@ -1,0 +1,44 @@
+{
+  "recorded_at": "2026-11-06T13:40:08.812644+00:00",
+  "scope": "preflight",
+  "os": "Linux",
+  "architecture": "x86_64",
+  "python": "3.12.14",
+  "windows_acceptance": false,
+  "versions": {
+    "codex": "0.163.0"
+  },
+  "checks": [
+    {
+      "name": "windows11",
+      "status": "blocked",
+      "code": "NATIVE_WINDOWS_11_REQUIRED"
+    },
+    {
+      "name": "python312",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "powershell7",
+      "status": "blocked",
+      "code": "PWSH7_REQUIRED"
+    },
+    {
+      "name": "codex_executable",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "codex_version",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "live_acceptance",
+      "status": "blocked",
+      "code": "USE_WINDOWS_ACCEPTANCE_CHECKLIST"
+    }
+  ],
+  "observed_exit_code": 2
+}

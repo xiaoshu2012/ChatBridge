@@ -1,0 +1,57 @@
+{
+  "recorded_at": "2026-11-05T13:41:39.196981+00:00",
+  "scope": "preflight",
+  "os": "Linux",
+  "architecture": "x86_64",
+  "python": "3.12.14",
+  "windows_acceptance": false,
+  "versions": {},
+  "checks": [
+    {
+      "name": "windows11",
+      "status": "blocked",
+      "code": "NATIVE_WINDOWS_11_REQUIRED"
+    },
+    {
+      "name": "python312",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "powershell7",
+      "status": "blocked",
+      "code": "PWSH7_REQUIRED"
+    },
+    {
+      "name": "CHATBRIDGE_QQ_APP_ID",
+      "status": "blocked",
+      "code": "NOT_CONFIGURED"
+    },
+    {
+      "name": "CHATBRIDGE_QQ_APP_SECRET",
+      "status": "blocked",
+      "code": "NOT_CONFIGURED"
+    },
+    {
+      "name": "CHATBRIDGE_QQ_C2C_OPENID",
+      "status": "blocked",
+      "code": "NOT_CONFIGURED"
+    },
+    {
+      "name": "CHATBRIDGE_QQ_GROUP_OPENID",
+      "status": "blocked",
+      "code": "NOT_CONFIGURED"
+    },
+    {
+      "name": "CHATBRIDGE_QQ_GROUP_MEMBER_OPENID",
+      "status": "blocked",
+      "code": "NOT_CONFIGURED"
+    },
+    {
+      "name": "qq_live_roundtrip",
+      "status": "blocked",
+      "code": "LIVE_CAPTURE_REQUIRED"
+    }
+  ],
+  "observed_exit_code": 2
+}

@@ -1,0 +1,40 @@
+{
+  "recorded_at": "2026-11-05T13:41:38.733329+00:00",
+  "scope": "preflight",
+  "os": "Linux",
+  "architecture": "x86_64",
+  "python": "3.12.14",
+  "windows_acceptance": false,
+  "versions": {
+    "deepseek-harness-sdk": "0.2.1rc2",
+    "deepseek-harness-runtime-bin": "0.2.1rc2"
+  },
+  "checks": [
+    {
+      "name": "windows11",
+      "status": "blocked",
+      "code": "NATIVE_WINDOWS_11_REQUIRED"
+    },
+    {
+      "name": "python312",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "powershell7",
+      "status": "blocked",
+      "code": "PWSH7_REQUIRED"
+    },
+    {
+      "name": "codex_executable",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "live_acceptance",
+      "status": "blocked",
+      "code": "USE_WINDOWS_ACCEPTANCE_CHECKLIST"
+    }
+  ],
+  "observed_exit_code": 2
+}

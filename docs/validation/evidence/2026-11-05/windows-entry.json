@@ -1,0 +1,27 @@
+{
+  "recorded_at": "2026-11-05T13:41:39.566906+00:00",
+  "scope": "windows-prerequisites",
+  "os": "Linux",
+  "architecture": "x86_64",
+  "python": "3.12.14",
+  "windows_acceptance": false,
+  "versions": {},
+  "checks": [
+    {
+      "name": "windows11",
+      "status": "blocked",
+      "code": "NATIVE_WINDOWS_11_REQUIRED"
+    },
+    {
+      "name": "python312",
+      "status": "pass",
+      "code": ""
+    },
+    {
+      "name": "powershell7",
+      "status": "blocked",
+      "code": "PWSH7_REQUIRED"
+    }
+  ],
+  "observed_exit_code": 2
+}
