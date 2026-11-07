@@ -151,3 +151,102 @@ def test_standalone_audit_fails_closed_without_sdk():
     assert result.returncode == 2
     assert "SDK_NOT_INSTALLED" in result.stdout
     assert result.stderr == ""
+
+
+def test_completed_wrong_question_answer_is_failure(events):
+    records = [event for event in events if event["event"] != "question-error"]
+    records.extend(
+        [
+            {"event": "host-question-answered", "phase": "question"},
+            {"event": "question-result", "phase": "question", "matched": False},
+        ]
+    )
+    assert statuses(assess(records, rejected=True))["native_question_roundtrip"] == (
+        "fail",
+        "QUESTION_ANSWER_MISMATCH",
+    )
+
+
+def test_cli_launches_sanitized_worker_without_changing_parent(
+    monkeypatch, tmp_path, capsys
+):
+    import json
+    import os
+
+    from tools.probes import dsh_native as native
+
+    monkeypatch.setenv("CHATBRIDGE_QQ_APP_SECRET", "fixture-secret")
+    monkeypatch.setenv("QQ_APP_SECRET", "fixture-secret")
+    monkeypatch.setattr(native, "installed_version", lambda name: "0.2.1rc2")
+    monkeypatch.setattr(native.shutil, "which", lambda name: "/fixture/pnpm")
+    monkeypatch.setattr(sys, "argv", ["dsh_native.py", "--workspace", str(tmp_path)])
+    observed = {}
+
+    def run(argv, *, env, timeout):
+        observed.update(env=env, argv=argv)
+        return subprocess.CompletedProcess(
+            argv,
+            2,
+            json.dumps(
+                {
+                    "scope": "dsh-native-lifecycle",
+                    "windows_acceptance": False,
+                    "checks": [],
+                }
+            ),
+            "",
+        )
+
+    monkeypatch.setattr(native, "run_isolated", run)
+    assert native.main() == 2
+    assert "--worker" in observed["argv"]
+    assert "CHATBRIDGE_QQ_APP_SECRET" not in observed["env"]
+    assert "QQ_APP_SECRET" not in observed["env"]
+    assert os.environ["CHATBRIDGE_QQ_APP_SECRET"] == "fixture-secret"
+    assert "fixture-secret" not in capsys.readouterr().out
+
+
+def test_native_worker_prevents_official_sdk_environment_remerge(
+    monkeypatch, tmp_path, capsys
+):
+    # Characterize the real installed SDK's Popen boundary; never launch a process.
+    sdk = pytest.importorskip("deepseek_harness")
+    from types import SimpleNamespace
+
+    import deepseek_harness.client as sdk_client
+
+    from tools.probes import dsh_native as native
+    from tools.probes.agents import child_environment
+    from tools.probes.common import Check
+
+    monkeypatch.setenv("CHATBRIDGE_QQ_APP_SECRET", "fixture-secret")
+    monkeypatch.setenv("QQ_APP_SECRET", "fixture-secret")
+    captured = {}
+
+    class StoppedAtSpawn(Exception):
+        pass
+
+    def spawn(*args, **kwargs):
+        captured.update(kwargs["env"])
+        raise StoppedAtSpawn
+
+    monkeypatch.setattr(sdk_client.subprocess, "Popen", spawn)
+
+    def audit(workspace):
+        client = sdk.HarnessClient(
+            sdk.HarnessConfig(
+                dsh_home=str(tmp_path / "home"),
+                cwd=str(workspace),
+                env=child_environment(),
+            )
+        )
+        with pytest.raises(StoppedAtSpawn):
+            client.start()
+        return [Check("fixture", "blocked", "NOT_A_LIVE_AUDIT")], []
+
+    monkeypatch.setattr(native, "audit", audit)
+    args = SimpleNamespace(workspace=tmp_path, events_file=None)
+    assert native.worker(args, {}) == 2
+    assert "CHATBRIDGE_QQ_APP_SECRET" not in captured
+    assert "QQ_APP_SECRET" not in captured
+    assert "fixture-secret" not in capsys.readouterr().out

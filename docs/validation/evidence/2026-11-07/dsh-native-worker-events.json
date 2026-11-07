@@ -1,0 +1,70 @@
+[
+  {
+    "phase": "seed",
+    "event": "plugin-ready"
+  },
+  {
+    "phase": "seed",
+    "event": "policy",
+    "source": "startup",
+    "before": {
+      "sandbox": "workspace-write",
+      "approval": "ask"
+    },
+    "after": {
+      "sandbox": "danger-full-access",
+      "approval": "ask"
+    },
+    "workspaceMatch": true
+  },
+  {
+    "phase": "guard",
+    "event": "plugin-ready"
+  },
+  {
+    "phase": "guard",
+    "event": "policy",
+    "source": "resume",
+    "before": {
+      "sandbox": "danger-full-access",
+      "approval": "ask"
+    },
+    "after": {
+      "sandbox": "workspace-write",
+      "approval": "never"
+    },
+    "workspaceMatch": true
+  },
+  {
+    "phase": "reject",
+    "event": "plugin-ready"
+  },
+  {
+    "phase": "reject",
+    "event": "rejected",
+    "source": "resume"
+  },
+  {
+    "phase": "question",
+    "event": "plugin-ready"
+  },
+  {
+    "phase": "question",
+    "event": "policy",
+    "source": "startup",
+    "before": {
+      "sandbox": "workspace-write",
+      "approval": "ask"
+    },
+    "after": {
+      "sandbox": "workspace-write",
+      "approval": "never"
+    },
+    "workspaceMatch": true
+  },
+  {
+    "phase": "question",
+    "event": "question-error",
+    "code": "NO_PROVIDER"
+  }
+]

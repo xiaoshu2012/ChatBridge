@@ -4,6 +4,7 @@ import argparse
 import json
 import queue
 import shutil
+import subprocess
 import sys
 import tempfile
 import threading
@@ -15,6 +16,7 @@ if __package__ in (None, ""):
 
 from tools.probes.agents import child_environment
 from tools.probes.common import Check, emit, installed_version
+from tools.probes.dsh_smoke import clean_environment
 from tools.probes.process import run_isolated
 
 PHASES = ("seed", "guard", "reject", "question")
@@ -74,6 +76,10 @@ def assess(events, *, rejected):
     elif question.get("matched") is True:
         checks.append(
             Check("native_question_roundtrip", "blocked", "HOST_REQUEST_NOT_OBSERVED")
+        )
+    elif question:
+        checks.append(
+            Check("native_question_roundtrip", "fail", "QUESTION_ANSWER_MISMATCH")
         )
     elif error.get("code") == "NO_PROVIDER":
         checks.append(Check("native_question_roundtrip", "blocked", "NO_PROVIDER"))
@@ -240,9 +246,25 @@ def audit(workspace):
         return assess(events, rejected=rejected), events
 
 
+def worker(args, versions):
+    # SDK start() overlays config.env onto os.environ; filtering an overlay alone
+    # cannot remove keys. This dedicated worker must scrub its own environment.
+    clean_environment()
+    try:
+        checks, events = audit(args.workspace.resolve())
+        if args.events_file:
+            with args.events_file.open("x", encoding="utf-8") as output:
+                json.dump(events, output, ensure_ascii=False, indent=2)
+                output.write("\n")
+    except Exception as exc:
+        checks = [Check("dsh_native_audit", "fail", type(exc).__name__)]
+    return emit("dsh-native-lifecycle", checks, versions)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--workspace", type=Path, required=True)
+    parser.add_argument("--worker", action="store_true", help=argparse.SUPPRESS)
     parser.add_argument(
         "--events-file",
         type=Path,
@@ -278,15 +300,36 @@ def main():
             [Check("plugin_manager", "blocked", "PNPM_REQUIRED")],
             versions,
         )
+    if args.worker:
+        return worker(args, versions)
+    argv = [
+        sys.executable,
+        str(Path(__file__).resolve()),
+        "--worker",
+        "--workspace",
+        str(args.workspace.resolve()),
+    ]
+    if args.events_file:
+        argv.extend(["--events-file", str(args.events_file.resolve())])
     try:
-        checks, events = audit(args.workspace.resolve())
-        if args.events_file:
-            with args.events_file.open("x", encoding="utf-8") as output:
-                json.dump(events, output, ensure_ascii=False, indent=2)
-                output.write("\n")
-    except Exception as exc:
-        checks = [Check("dsh_native_audit", "fail", type(exc).__name__)]
-    return emit("dsh-native-lifecycle", checks, versions)
+        run = run_isolated(argv, env=child_environment(), timeout=300)
+        report = json.loads(run.stdout)
+        if (
+            run.returncode not in (0, 1, 2)
+            or not isinstance(report, dict)
+            or report.get("scope") != "dsh-native-lifecycle"
+            or report.get("windows_acceptance") is not False
+            or not isinstance(report.get("checks"), list)
+        ):
+            raise ValueError("INVALID_AUDIT_REPORT")
+    except (OSError, subprocess.TimeoutExpired, ValueError):
+        return emit(
+            "dsh-native-lifecycle",
+            [Check("dsh_native_worker", "fail", "WORKER_FAILED_OR_INVALID_REPORT")],
+            versions,
+        )
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return run.returncode
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 
 [Windows 验收记录](windows-capabilities.md) · [M1 阶段](../superpowers/plans/2026-10-24-chatbridge/M1-capability-validation.md) · [探针使用](../../tools/probes/README.md)
 
-最后更新：2026-11-06（SDK/PyPI 候选复核于 11-05，Codex 与离线回归复核于 11-06）。M1 状态：阻塞。以下 Linux 实测不代替 Windows 11 x64；尚未冻结 M2/M3 的产品依赖基线。
+最后更新：2026-11-07（DSH 候选与原生生命周期复核于 11-07，Codex 协议报告保留 11-06 证据）。M1 状态：阻塞。以下 Linux 实测不代替 Windows 11 x64；尚未冻结 M2/M3 的产品依赖基线。
 
 ## 版本与官方来源
 
@@ -24,8 +24,8 @@
 | 新建 | Linux 空临时 thread 通过，无模型 | Linux 创建空持久会话/读取 cwd 通过 | 不证明执行任务 |
 | 同 ID 恢复 | 仅验证不存在 ID 被拒绝；已有会话恢复待验收 | 空会话关闭后，同 ID 跨 runtime 恢复通过 | 含模型历史、占用锁、损坏历史仍待验收 |
 | 协议事件 | 未知通知、分片、错误响应等离线测试通过 | SDK 原生事件/终态的模型运行待验收 | fixture 是人工构造，并非真实平台日志 |
-| 原生问答 | 待真实模型/Windows 验收 | 候选配置缺少 `on_user_question`，blocked | 需升级到包含契约的发布版本，或验证官方低层替代路径后修订计划 |
-| 权限与工作区写入 | 握手显式 workspace-write / never；未执行文件写入 | 没有验证历史 full-access 降级守卫 | 必须证明项目内写入、项目外写入拒绝；配置声明不算执行证据 |
+| 原生问答 | 待真实模型/Windows 验收 | 候选高层回调缺失；声明低层能力后的程序化问题返回 NO_PROVIDER，blocked | 尚未证明模型问题转发或取消，不能按 master 冻结接口 |
+| 权限与工作区写入 | 握手显式 workspace-write / never；未执行文件写入 | Linux 空历史回放、原生降级与主动拒绝恢复通过；首模型请求与 Windows 写边界待验收 | 必须证明项目内写入、项目外写入拒绝；生命周期读回不代替真实执行证据 |
 | 取消与关闭 | 无模型进程关闭/异常回收已测；活动任务取消未测 | 空运行时正常 close 已观察；活动任务取消/锁释放未测 | Windows 原生停止和进程树行为待验收 |
 | QQ 身份过滤 | 不适用 | 不适用 | 私聊/群身份分离、群 @门控离线通过；实际身份和应用权限待验收 |
 | QQ 鉴权/心跳/恢复 | 不适用 | 不适用 | 有显式 live smoke；当前未配置测试应用，未发送消息 |
@@ -39,5 +39,6 @@
 - [DSH 复核报告](evidence/2026-11-05/dsh-protocol.json)：恢复官方默认 30 秒初始化上限后，无模型初始化、空会话新建、同 ID 恢复及不存在会话拒绝通过；因为问答与权限守卫尚未满足，整体退出码 2。
 - [Windows 前置检查](evidence/2026-11-05/windows-entry.json)、[QQ 前置检查](evidence/2026-11-05/qq-preflight.json)：退出码 2。
 - [探针依赖锁定快照](../../tools/probes/requirements-candidate.lock)：只用于重复上述探针环境，不是 Windows 产品验收结论。
+- [发布版原生验证](dsh-native-lifecycle.md)：原生策略、实际历史降级与拒绝路径四项通过；原生问题 NO_PROVIDER、模型边界和 Windows 写边界仍 blocked，整体退出 2。
 
 真实验收通过后再更新本矩阵和产品依赖范围；不能提前把某版本写为 Windows 已支持。

@@ -2,9 +2,9 @@
 
 [返回主规划](../2026-10-24-chatbridge-implementation-plan.md) · [架构设计](../../specs/2026-10-24-chatbridge-design.md) · [上一阶段 M0](M0-docs-and-github.md) · [下一阶段 M2](M2-python-core.md)
 
-状态：阻塞（协议探针与离线检查已交付；真实 Windows/模型/QQ 验收及 DSH 权限守卫未通过）。依赖：M0，已收尾。预计：前置条件就绪后 1—2 个工作日。
+状态：阻塞（探针及 Linux 原生生命周期验证已交付；真实 Windows/模型/QQ、DSH 问答和完整模型入站权限验收未通过）。依赖：M0，已收尾。预计：前置条件就绪后 1—2 个工作日。
 
-当前产物：[探针使用](../../../../tools/probes/README.md) · [Windows 验收记录](../../../validation/windows-capabilities.md) · [兼容矩阵](../../../validation/compatibility-matrix.md)。最后更新：2026-11-06。最新探针修订标签 `v0.0.0-m1.2` 不表示 M1 已验收，原标签 `v0.0.0-m1.1` 保留。
+当前产物：[探针使用](../../../../tools/probes/README.md) · [Windows 验收记录](../../../validation/windows-capabilities.md) · [兼容矩阵](../../../validation/compatibility-matrix.md) · [DSH 原生验证](../../../validation/dsh-native-lifecycle.md)。最后更新：2026-11-07。最新原生审计标签 `v0.0.0-m1.4` 不表示 M1 已验收，旧标签保留。
 
 ## 目标与前置条件
 
@@ -47,6 +47,7 @@ M2/M3 消费明确锁定的版本和协议 fixture；SDK 版本不支持的能�
 - [ ] 验证 profile 的 Windows PowerShell 执行、文件工具和工作区边界。
 - [ ] 构造曾为 full-access 的历史会话，验证默认 profile 不足以降级，并找出官方扩展点。
 - [ ] 用最小权限守卫探针证明：首个模型请求前重新设置工作区权限，失败则不接收 prompt；记录需使用的原生 API 与扩展打包方式。
+- [x] 补充 Linux 无模型原生生命周期探针：官方本地 bundle、`agent/created`、原生策略函数、历史空会话 full-access 降级及主动拒绝恢复均实测；不勾选上方完整模型/Windows 验收。
 - [ ] 验证 runtime 关闭可停止活动、落盘并释放 writer 锁；若 SDK 无 per-task cancel，记录进程关闭策略。
 
 ### M1.5：冻结结论
@@ -87,5 +88,6 @@ pwsh -NoProfile -File tools/probes/run-windows.ps1 -PythonPath .\.venv\Scripts\p
 | 2026-11-05 | 创建独立验证工具草稿 PR | [PR #2](https://github.com/xiaoshu2012/ChatBridge/pull/2)，分支 `feat/m1-capability-validation`，目标 `docs/chatbridge-plan`，依赖 PR #1；M1 继续保持阻塞 |
 | 2026-11-06 | 完成独立审阅后的修复和回归 | QQ 心跳确认按连接隔离并拒绝无待确认心跳的 ACK；Codex 版本写入探针报告；新增回归先失败再通过，完整 44 项测试与 Ruff 检查通过；真实验收仍阻塞 |
 | 2026-11-06 | 修复用户报告的恢复期间补发消息丢弃 | 补发消息通过白名单后有界暂存，RESUMED 后统一回复并去重；恢复未确认/被拒绝均不发送；旧 ACK 修复 `3740147` 保留并回归验证；新增 7 项完整循环测试，完整 51 项通过，快照 `v0.0.0-m1.2` |
+| 2026-11-07 | 继续推进已发布 DSH 原生接口验证 | Linux 生命周期策略降级与拒绝恢复通过；程序化问题 NO_PROVIDER；新增隔离 worker 防止 SDK 重新继承 QQ 环境变量，64 项测试通过；快照 `v0.0.0-m1.4` |
 
 决定：沿用用户确认的架构，不以 Linux 结果替代 Windows；M1 保持阻塞，未验收任务不勾选。恢复条件及剩余逐项验收见 [Windows 验收记录](../../../validation/windows-capabilities.md)。

@@ -56,6 +56,18 @@ pwsh -NoProfile -File tools/probes/run-windows.ps1 -PythonPath .\.venv\Scripts\p
 
 此 smoke 不验证 token 长时间更新、平台回复窗口/次数、主动消息或媒体权限，也不自动恢复 RESUME 失败后的业务连接；这些仍须真实应用测试。缺少配置不会发网络请求。需要官方 QQ API 和网关访问权限，不能用模拟 HTTP 作为平台通过证据。
 
+## DSH 原生生命周期与问答审计
+
+另提供 [dsh_native.py](dsh_native.py)，独立于普通 `agents.py --protocol-only`。已安装候选依赖快照、`pnpm` 可用、临时工作区存在时运行：
+
+```powershell
+.\.venv\Scripts\python.exe tools/probes/dsh_native.py --workspace "C:\Temp\ChatBridge 验证"
+```
+
+工具在临时 dsh_home 通过官方插件管理安装测试 bundle，以空会话验证历史权限回放、原生函数降级、策略回读和主动拒绝恢复；另通过 SDK 通用请求尝试程序化原生问答。不会提交模型 prompt、执行工具或触碰用户历史。bundle 包含构造历史与主动拒绝测试逻辑，不可用于生产 profile。
+
+需要保留脱敏事件时使用 `--events-file <新 JSON 路径>`，父目录须已存在，文件不会覆盖。探针在独立 worker 中清理 QQ 环境变量，避免 SDK 重新继承；调用终端环境不变。当前发布候选返回 `NO_PROVIDER`，且首模型请求/Windows 写边界未执行，因此整体退出码仍为 2。[原生验证记录](../../docs/validation/dsh-native-lifecycle.md)区分已证明的生命周期行为和未完成的真实验收。
+
 ## 检查与退出码
 
 - 0：当前 scope 的检查通过。

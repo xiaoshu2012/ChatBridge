@@ -2,7 +2,7 @@
 
 [M1 阶段计划](../superpowers/plans/2026-10-24-chatbridge/M1-capability-validation.md) · [兼容矩阵](compatibility-matrix.md) · [探针使用](../../tools/probes/README.md)
 
-最后更新：2026-11-06。状态：阻塞。M0 已收尾并备份为 `v0.0.0-m0.2`；M1 已交付协议探针、离线测试、Windows 本机入口和脱敏证据，尚未完成真实 Windows/模型/QQ 验收。
+最后更新：2026-11-07。状态：阻塞。M0 已收尾并备份为 `v0.0.0-m0.2`；M1 已交付协议探针、离线测试、Windows 本机入口和脱敏证据；新增 Linux 原生生命周期验证，尚未完成真实 Windows/模型/QQ 验收。
 
 ## 当前已完成与执行边界
 
@@ -34,8 +34,8 @@ pwsh -NoProfile -File tools/probes/run-windows.ps1 -PythonPath .\.venv\Scripts\p
 | CDX-02 | 原生问题与取消 | 问答往返正确；中断后终态和进程/锁明确 | blocked：未测 |
 | CDX-03 | Windows 沙箱与历史占用 | 项目内写成功、项目外拒绝；占用时不接管、不删锁 | blocked：未测 |
 | DSH-01 | 标准 sdk、PowerShell、任务与恢复 | 官方发布版在本机完成模型执行和原生历史恢复 | blocked：仅 Linux 无模型检查 |
-| DSH-02 | 原生问题 | 原问题逐一回答、取消后旧回答失效 | blocked：候选版高层回调接口缺失 |
-| DSH-03 | 历史 full-access 降级守卫 | 首个模型请求前应用并核验权限，失败不接收 prompt | blocked：未实现/验证发布版扩展点与守卫探针 |
+| DSH-02 | 原生问题 | 原问题逐一回答、取消后旧回答失效 | blocked：候选版高层回调接口缺失；声明低层能力后的程序化问题仍返回 NO_PROVIDER |
+| DSH-03 | 历史 full-access 降级守卫 | 首个模型请求前应用并核验权限，失败不接收 prompt | Linux 空会话恢复降级与主动拒绝已验证；首模型请求、完整入站阻断及 Windows 写边界仍 blocked |
 | DSH-04 | 活动运行时关闭与 writer 锁 | 停止活动、落盘并释放锁，其他客户端不被终止 | blocked：未测；正常 close 空 runtime 不证明此项 |
 
 ## DSH 发布版本差异
@@ -43,6 +43,8 @@ pwsh -NoProfile -File tools/probes/run-windows.ps1 -PythonPath .\.venv\Scripts\p
 [发布候选 API 参数证据](evidence/2026-11-05/sdk-contract.json)来自安装的 wheel，并与[固定源码文档](https://github.com/deepseek-ai/deepseek-harness/blob/fcc0ad462172522aaf5c93a7b2e01f6b9f0b0159/python/sdk/README.md)比较。候选版本有 `resume_session`，但 `DeepSeekHarnessConfig` 没有 `on_user_question`；不能因为构造函数存在 `**kwargs` 就判断支持回调。当前仅证明所选高层 API 不满足计划，未证明官方低层协议无法实现。
 
 恢复条件：选择含所需契约的可安装发布版本，或在正式修订设计后证明官方低层问答路径；并在该版本上验证权限扩展点和 full-access 历史守卫。不得切换 sdk-minimal/full-access，或用提示词代替权限控制。
+
+2026-11-07 补充：[已发布运行时原生验证](dsh-native-lifecycle.md)证明本地 bundle、原生策略函数和生命周期拒绝路径可用；程序化问题返回 NO_PROVIDER。临时空历史中的 full-access 仅由原生 API 构造为测试前置，没有在该模式运行模型或工具；这不构成以 full-access 回退完成产品任务。
 
 ## 检查和交付记录
 
@@ -56,5 +58,6 @@ pwsh -NoProfile -File tools/probes/run-windows.ps1 -PythonPath .\.venv\Scripts\p
 | 2026-11-06 | 独立审阅后的修复与最终检查 | 修复 QQ 重连沿用旧 ACK 的误判，只接受当前连接待确认心跳的 ACK；Codex 报告直接记录真实二进制版本；新回归测试先失败再通过，完整 44 项通过；[最终检查记录](evidence/2026-11-06/final-checks.txt) |
 | 2026-11-06 | 复核真实 Codex 版本及协议 | [0.163.0 协议报告](evidence/2026-11-06/codex-protocol.json)，仅为 Linux 无模型检查；当前聊天仍未附加 Windows 本机终端 |
 | 2026-11-06 | 修复恢复期间丢弃补发消息，验证旧连接 ACK 不算通过 | 新增私聊/群聊补发、确认前不发送、恢复失败/超时、重复消息和缺失当前连接 ACK 的完整循环回归，先复现失败再修复；[修订检查记录](evidence/2026-11-06/qq-recovery-regression.txt)；完整 51 项测试通过 |
+| 2026-11-07 | 发布版原生生命周期审计及独立审阅修复 | 历史覆盖降级和拒绝恢复通过，问题返回 NO_PROVIDER；修复 SDK 环境重新合并导致的 QQ 变量继承；完整 64 项测试通过，详见[原生验证记录](dsh-native-lifecycle.md) |
 
-所有版本保留完整项目文件树；最新 M1 探针修订快照为 `v0.0.0-m1.2`，首次快照 `v0.0.0-m1.1` 保留，均不表示阶段已验收。[草稿 PR #2](https://github.com/xiaoshu2012/ChatBridge/pull/2) 位于 `feat/m1-capability-validation`，依赖 M0 的 PR #1，未经授权不合并。最终提交通过版本标签定位，交接时核验远端分支及标签解引用 SHA。M2/M3 的产品基线不在此时冻结。
+所有版本保留完整项目文件树；最新 M1 原生审计修订快照为 `v0.0.0-m1.4`，此前探针及日志标签均保留，均不表示阶段已验收。[草稿 PR #2](https://github.com/xiaoshu2012/ChatBridge/pull/2) 位于 `feat/m1-capability-validation`，依赖 M0 的 PR #1，未经授权不合并。最终提交通过版本标签定位，交接时核验远端分支及标签解引用 SHA。M2/M3 的产品基线不在此时冻结。
