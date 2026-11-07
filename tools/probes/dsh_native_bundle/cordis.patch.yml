@@ -1,0 +1,3 @@
+- insert:
+    - id: chatbridge-m1-native-probe
+      name: '@chatbridge/m1-native-probe'
